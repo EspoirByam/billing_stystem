@@ -115,4 +115,12 @@
           <!-- /.box -->
         </div>
       </section>
+
+
+      <?php if(!empty($projects)): $count = 0; foreach($projects as $project): $count++; ?>
+      <option value="<?php echo $project['ID']; ?>"> <?php echo $project['Name'] ; ?></option>
+      <?php endforeach; else: ?>
+      <?php endif; ?>
+
+      
  
