@@ -6,6 +6,7 @@ session_start();
 //load and initialize database class
 require_once 'core/db.php';
 $db = new db();
+
 ?>
 
 
@@ -63,7 +64,7 @@ $db = new db();
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="#">
+            <a class="nav-link active" href="index.php">
               <span data-feather="home"></span>
               Dashboard <span class="sr-only">(current)</span>
             </a>
@@ -137,7 +138,7 @@ $db = new db();
                 (
                   'order_by'=>'id desc'
                 );
-          $bill = $db->getRows('bill',$condition);
+          $bills = $db->getRows('bill',$condition);
 ?>
 
 
@@ -147,29 +148,31 @@ $db = new db();
               <th>Customer</th>
               <th>Month</th>
               <th>Year</th>
-              <th>Amount</th>
-              <th>Total Bill</th>
+             <th>Total Bill</th>
             </tr>
           </thead>
           <tbody>
              <?php if(!empty($bills)): $count = 0; foreach($bills as $bill): $count++; ?>
             <tr> 
              <?php 
-                 // $condition =array 
-                 //  (
-                 //    'order_by'=>'CustomerID desc',
-                 //    'where'=>array('CustomerId' => $bill['CustomerID'] )
-                 //  );
-                 // $customers = $db->getRows('CustomerId',$condition);
+                 $condition =array 
+                  (
+                    'order_by'=>'CustomerID desc',
+                    'where'=>array('CustomerId' => $bill['CustomerId'] ),
+                    'select'=>'name,surname'
+                  );
+                 $customers = $db->getRows('customer',$condition);
 
-                 //  if(!empty($customers)) :  foreach($customers as $list): 
+                  if(!empty($customers)) :  foreach($customers as $list): 
              ?>             
-              <td><?php echo  $bill['name']; ?></td>
+              <td><?php echo  $list['name']."  ".$list['name']; ?></td>
+        <?php endforeach; else: ?>
+              <?php endif; ?>
 
-              <td> <?php echo $bill['Month_Bill']; ?></td>
+              <td> <?php  echo $bill['Month_Bill']; ?></td>
               <td> <?php echo $bill['Year_Bill']; ?></td>
               <td> <?php echo $bill['amount']; ?></td>
-              <?php endforeach; else: ?>
+              <?php endforeach; else:  echo date('n')."/".date('Y') ?>
               <?php endif; ?>
 
 
@@ -225,8 +228,7 @@ $db = new db();
       ?>
         <table class="table table-bordered table-striped table-sm">
           <thead>
-             <?php if(!empty($calls)): $count = 0; foreach($calls as $phoneCall): $count++; ?>
-            <tr>
+              <tr>
               <th>Customer</th>
               <th>Date</th>
               <th>Time</th>
@@ -235,15 +237,33 @@ $db = new db();
             </tr>
           </thead>
           <tbody>
+            <?php if(!empty($calls)): $count = 0; foreach($calls as $phoneCall): $count++; ?>
+           
             <tr>              
-              <td> <?php echo $phoneCall['CustomerId']; ?></td>
+              
+            <?php 
+                 $condition =array 
+                  (
+                    'order_by'=>'CustomerID desc',
+                    'where'=>array('CustomerId' =>$phoneCall['CustomerId'] ),
+                    'select'=>'name,surname'
+                  );
+                 $customers = $db->getRows('customer',$condition);
+
+                  if(!empty($customers)) :  foreach($customers as $list): 
+             ?>             
+              <td><?php echo  $list['name']."  ".$list['name']; ?></td>
+        <?php endforeach; else: ?>
+              <?php endif; ?>
+               
               <td> <?php echo $phoneCall['Date_Call']; ?></td>
               <td> <?php echo $phoneCall['Time_Call']; ?></td>
               <td> <?php echo $phoneCall['calledNumber']; ?></td>
-              <td> <?php echo $phoneCall['duration']; ?></td>
-              <?php endforeach; else: ?>
-              <?php endif; ?>
+              <td> <?php echo $phoneCall['duration']."  Minutes"; ?></td>
+              
             </tr>
+            <?php endforeach; else: ?>
+              <?php endif; ?>
           </tbody>
         </table>
       <?php
@@ -262,13 +282,15 @@ $db = new db();
              <?php if(!empty($costPlan)): $count = 0; foreach($costPlan as $CostPlan): $count++; ?>
             <tr>
               <th>Code</th>
+              <th>Name</th>
               <th>Cost at response</th>
               <th>Cost per second</th>
             </tr>
           </thead>
           <tbody>
             <tr>  
-              <td> <?php echo $CostPlan['Code']; ?></td>          
+              <td> <?php echo $CostPlan['Code']; ?></td>  
+              <td> <?php echo $CostPlan['name']; ?></td>          
               <td> <?php echo $CostPlan['costAtResponse']; ?></td>
               <td> <?php echo $CostPlan['costPerSecond']; ?></td>
               <?php endforeach; else: ?>
@@ -284,7 +306,19 @@ $db = new db();
 
     ?>
 
-        <h4 class="text-center text-info" style="margin-top: 20%;">Welcome into your Billing System...</h4>
+        <h4 class="text-center text-info" style="margin: 10%;">Welcome into your Billing System...</h4>
+      <div class="col-sm-6 offset-3">
+        <div class="card">
+          <div class="card-header">
+            Group assignment || Done by
+          </div>
+          <div class="card-body">
+            <span>201811 Boniface Kaghusa </span> <br>
+            <span>201811457 Espoir Byamungu </span>
+          </div>
+          
+        </div>
+        </div>
     <?php
    }
 
@@ -333,8 +367,19 @@ $db = new db();
                            <div class="col-sm-9">
                                <select type="text" name="cost_plan" class="form-control form-control-sm" required>
                                 <option selected disabled>[SELECT]</option>
-                                <option value="1">class A</option>
-                                <option  value="2">class B</option>
+                                <?php
+                                     $condition =array                 (
+                                        'order_by'=>'Code desc',
+                                        'select' => 'Code, name'
+                                      );
+                                $costPlan = $db->getRows('costplan',$condition);
+                             
+                             if(!empty($costPlan)): $count = 0; foreach($costPlan as $costplan): $count++; ?>
+                              <option value="<?php echo $costplan['Code']; ?>"> <?php echo $costplan['name'] ; ?></option>
+                              <?php endforeach; else: ?>
+                              <?php endif; 
+
+                                ?>
                                </select>
                            </div>
                        </div>
@@ -404,11 +449,21 @@ $db = new db();
                            <label class="col-sm-3 col-form-label">Customer </label>
                            <div class="col-sm-9">
                                <select type="text" name="customer" class="form-control form-control-sm" required>
-                                <option selected disabled>[SELECT]</option>
-                                <option value="1">Espoir</option>
-                                <option  value="2">Joseph</option>
-                                <option  value="3">Bojos</option>
-                               </select>
+                                <option selected disabled>[ SELECT ]</option>
+                                <?php
+
+                                   $condition =array 
+                                      (
+                                        'order_by'=>'CustomerID desc',
+                                        'select'=>'CustomerID,name,surname'
+                                      );
+                                $customers = $db->getRows('customer',$condition);
+     
+                                 if(!empty($customers)): $count = 0; foreach($customers as $cust): $count++; ?>
+                                  <option value="<?php echo $cust['CustomerID']; ?>"> <?php echo $cust['name']." ".$cust['surname'] ; ?></option>
+                                  <?php endforeach; else: ?>
+                                  <?php endif; ?>
+                                   </select>
                            </div>
                        </div>
                       <div class="form-group row">

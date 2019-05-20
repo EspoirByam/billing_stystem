@@ -13,30 +13,103 @@ $redirectURL = '../'.$db->url;
    if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newPhoneCall']))
     {
         
+        $planId=0;
             $phoneCallData = array
             (
-                'CustomerId' =>  (int) $_POST['customer'],
+                'Customerid' =>  (int) $_POST['customer'],
                 'Date_Call' =>  $_POST['call_date'],
                 'Time_Call' => $_POST['call_time'],
                 'calledNumber' => $_POST['called_number'],
                 'duration' => (int)$_POST['duration'],
             );
 
-  $insert = $db->insert('phonecall', $phoneCallData);
-            if($insert){
-                $sessData['status']['type'] = 'success';
-                $sessData['status']['msg'] = 'Operation Réussie ';
-            //set redirect url
-                $redirectURL .= 'index.php';
+                                    $ConCust =array 
+                                      (
+                                        'order_by'=>'CustomerID desc',
+                                        'where'=>array('CustomerID' =>(int) $_POST['customer'],),
+                                        'select'=>'costPlan'
+                                      );
+
+                                     $customers = $db->getRows('customer',$ConCust);
+                                     if (!empty($customers)) : foreach ($customers as $val)  :
+                                         # code...
+                                        $planId=$val['costPlan'] ; endforeach ;
+
+                                        else : $planId; endif;
+                                     
+
+            $insert = $db->insert('phonecall', $phoneCallData);
+            if($insert)
+
+            {
 
             }
 
             else{
-                $sessData['status']['type'] = 'error';
-                $sessData['status']['msg'] = 'Operation échouée, essayez encore  ';
+                echo $planId  ;
+
+        $condit =array 
+                (
+                  'order_by'=>'Code desc',
+                  'where'=>array('Code'=>$planId,  ),
+                  'select'=>'costPerSecond'
+                );
+                     $costPlan = $db->getRows('costplan',$condit);
+
+            if(!empty($costPlan)): foreach ($costPlan as $plan) :
+
+               
                 
-                //set redirect 
-                $redirectURL .= 'index.php';
+             $billCondition =array 
+                (
+                  'order_by'=>'id desc',
+                  'where'=>array('CustomerId' =>(int) $_POST['customer'] ,'Month_Bill'=>(int) date('n'),'Year_Bill'=>date('Y')) ,
+                  'select'=>'amount,id'
+                );
+            $checkBill = $db->getRows('bill',$billCondition);
+
+                if(!empty($checkBill)):  foreach ($checkBill as $bill) :
+                        
+                $Total = $bill['amount']+((int)$_POST['duration']*$plan['costPerSecond']);
+                $updateBill=$db->update('bill',$data=array('amount'=>$Total,),$conditions=array('id' =>$bill['id'] , ));
+                if ($updateBill) echo  $redirectURL .= 'index.php?request=bill'; else   $redirectURL .= 'index.php?request=bill';
+;
+
+              endforeach;
+                else :
+
+
+                     $insertBill = $db->insert('bill', $BillData=array('CustomerId' =>(int) $_POST['customer'] ,'Month_Bill'=>date('n'),'Year_Bill'=> (int) date('Y') ,'amount'=>  (int)$_POST['duration']*$plan['costPerSecond'] ),);
+                     if ($insertBill) 
+                            
+
+                            {
+                                 $redirectURL .= 'index.php?request=bill';
+                            }
+                           
+                               
+                       
+                endif;
+
+  endforeach ;
+
+            else :
+
+
+                
+ echo "bojo";
+
+
+            endif;
+
+
+                // $sessData['status']['type'] = 'error';
+                // $sessData['status']['msg'] = 'Operation échouée, essayez encore  ';
+                
+                // //set redirect 
+                // $redirectURL .= 'index.php';
+
+                // echo  "ok".$planId;
             }
     } 
 
