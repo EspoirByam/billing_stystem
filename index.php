@@ -1,3 +1,14 @@
+<?php
+//start session
+//start session
+session_start();
+
+//load and initialize database class
+require_once 'core/db.php';
+$db = new db();
+?>
+
+
 <!doctype html>
 <html lang="en">
   
@@ -97,6 +108,11 @@
             All Customer</a>
           </div>
           <div class="btn-group mr-2">
+            <a type="button" class="btn btn-sm btn-outline-secondary" href="?request=costplans">
+              <span data-feather="bar-chart-2"></span>
+            All Cost Plan</a>
+          </div>
+          <div class="btn-group mr-2">
             <a type="button" class="btn btn-sm btn-outline-secondary" href="?request=calls">
               <span data-feather="phone"></span>
             All Calls</a>
@@ -116,6 +132,12 @@
                   {
                     if ($_REQUEST['request']=='bill')
                     {
+
+                       $condition =array 
+                (
+                  'order_by'=>'id desc'
+                );
+          $bill = $db->getRows('bill',$condition);
 ?>
 
 
@@ -130,18 +152,39 @@
             </tr>
           </thead>
           <tbody>
-            <tr>              
-              <td>Espoir Byamungu</td>
-              <td>April</td>
-              <td>2019</td>
-              <td>25000</td>
-              <td>20000</td>
+             <?php if(!empty($bills)): $count = 0; foreach($bills as $bill): $count++; ?>
+            <tr> 
+             <?php 
+                 // $condition =array 
+                 //  (
+                 //    'order_by'=>'CustomerID desc',
+                 //    'where'=>array('CustomerId' => $bill['CustomerID'] )
+                 //  );
+                 // $customers = $db->getRows('CustomerId',$condition);
+
+                 //  if(!empty($customers)) :  foreach($customers as $list): 
+             ?>             
+              <td><?php echo  $bill['name']; ?></td>
+
+              <td> <?php echo $bill['Month_Bill']; ?></td>
+              <td> <?php echo $bill['Year_Bill']; ?></td>
+              <td> <?php echo $bill['amount']; ?></td>
+              <?php endforeach; else: ?>
+              <?php endif; ?>
+
+
             </tr>
           </tbody>
         </table>
 
 <?php      
    } elseif ($_REQUEST['request']=='customers') {
+
+      $condition =array 
+                (
+                  'order_by'=>'CustomerID desc'
+                );
+          $customers = $db->getRows('customer',$condition);
      
 ?>
      <table class="table table-bordered table-striped table-sm">
@@ -151,28 +194,38 @@
               <th>Name</th>
               <th>Surname</th>
               <th>Phone Number</th>
-              <th>Cost Number</th>
-              <th>Duration</th>
+              <th>Cost Plan</th>
             </tr>
           </thead>
           <tbody>
+              <?php if(!empty($customers)): $count = 0; foreach($customers as $cust): $count++; ?>
             <tr>              
-              <td> 1</td>
-              <td>Espoir</td>
-              <td>Byamungu</td>
-              <td>0780440474</td>
-              <td>20</td>
-              <td>40</td>
+              <td> <?php echo $cust['CustomerID']; ?></td>
+              <td> <?php echo $cust['name']; ?></td>
+              <td> <?php echo $cust['surname']; ?></td>
+              <td> <?php echo $cust['phoneNumber']; ?></td>
+              <td> <?php echo $cust['costPlan']; ?></td>
+
+              <?php endforeach; else: ?>
+              <?php endif; ?>
+
             </tr>
           </tbody>
         </table>
 <?php
 
    }elseif ($_REQUEST['request']=='calls') {
+    $condition =array 
+                (
+                  'order_by'=>'CustomerId desc'
+                );
+          $calls = $db->getRows('phonecall',$condition);
+     
 
       ?>
         <table class="table table-bordered table-striped table-sm">
           <thead>
+             <?php if(!empty($calls)): $count = 0; foreach($calls as $phoneCall): $count++; ?>
             <tr>
               <th>Customer</th>
               <th>Date</th>
@@ -183,18 +236,57 @@
           </thead>
           <tbody>
             <tr>              
-              <td>Espoir Byamungu</td>
-              <td>23/06/2019</td>
-              <td>11:20 PM</td>
-              <td>0780440474</td>
-              <td>20</td>
+              <td> <?php echo $phoneCall['CustomerId']; ?></td>
+              <td> <?php echo $phoneCall['Date_Call']; ?></td>
+              <td> <?php echo $phoneCall['Time_Call']; ?></td>
+              <td> <?php echo $phoneCall['calledNumber']; ?></td>
+              <td> <?php echo $phoneCall['duration']; ?></td>
+              <?php endforeach; else: ?>
+              <?php endif; ?>
             </tr>
           </tbody>
         </table>
       <?php
 
+   }elseif ($_REQUEST['request']=='costplans') {
+    $condition =array 
+                (
+                  'order_by'=>'Code desc'
+                );
+          $costPlan = $db->getRows('costplan',$condition);
+     
+
+      ?>
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+             <?php if(!empty($costPlan)): $count = 0; foreach($costPlan as $CostPlan): $count++; ?>
+            <tr>
+              <th>Code</th>
+              <th>Cost at response</th>
+              <th>Cost per second</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>  
+              <td> <?php echo $CostPlan['Code']; ?></td>          
+              <td> <?php echo $CostPlan['costAtResponse']; ?></td>
+              <td> <?php echo $CostPlan['costPerSecond']; ?></td>
+              <?php endforeach; else: ?>
+              <?php endif; ?>
+            </tr>
+          </tbody>
+        </table>
+      <?php
+
+   }  
+ }else{
+
+
+    ?>
+
+        <h4 class="text-center text-info" style="margin-top: 20%;">Welcome into your Billing System...</h4>
+    <?php
    }
- }
 
 ?>
 

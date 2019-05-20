@@ -5,7 +5,7 @@ session_start();
 
 //load and initialize database class
 require_once '../core/db.php';
-$db = new DB();
+$db = new db();
 
 
 $redirectURL = '../'.$db->url;
@@ -55,7 +55,7 @@ $redirectURL = '../'.$db->url;
                 $sessData['status']['type'] = 'success';
                 $sessData['status']['msg'] = 'Operation done successfully ';
             //set redirect url
-                $redirectURL .= 'index.php';
+                $redirectURL .= 'index.php?request=customers';
 
             }
 
@@ -64,7 +64,7 @@ $redirectURL = '../'.$db->url;
                 $sessData['status']['msg'] = 'Operation failed , try again  ';
                 
                 //set redirect 
-                $redirectURL .= 'index.php';
+                $redirectURL .= 'index.php?request=customers';
             }
     }
     else if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newCostPlan']))
