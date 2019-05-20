@@ -7,35 +7,27 @@ session_start();
 require_once '../core/db.php';
 $db = new DB();
 
-$Dte = date('Y/m/d');
-$y=date('Y');
-$m=date('m');
 
-
-//set default redirect url
 $redirectURL = '../'.$db->url;
-   if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Destination']))
+
+   if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newPhoneCall']))
     {
-        $Dte = date('Y/m/d');
-        $tblName = 'aidesong_exit';
-            //insert data
-  
-            $userData = array
+        
+            $phoneCallData = array
             (
-                'Destination' =>   $_POST['Destination'],
-                'Motif' =>  $_POST['Motif'],
-                'TimeOut' => $_POST['Tout'],
-                'DateOut' => $_POST['Dout'],
-                'TimeBack' => $_POST['Tback'],
-                'DateBack' => $_POST['Dback'],
-                'User_ID' => (int)$_POST['user'],
+                'CustomerId' =>  (int) $_POST['customer'],
+                'Date_Call' =>  $_POST['call_date'],
+                'Time_Call' => $_POST['call_time'],
+                'calledNumber' => $_POST['called_number'],
+                'duration' => (int)$_POST['duration'],
             );
-  $insert = $db->insert($tblName, $userData);
+
+  $insert = $db->insert('phonecall', $phoneCallData);
             if($insert){
                 $sessData['status']['type'] = 'success';
                 $sessData['status']['msg'] = 'Operation Réussie ';
             //set redirect url
-                $redirectURL .= '?request=sortielist';
+                $redirectURL .= 'index.php';
 
             }
 
@@ -44,7 +36,60 @@ $redirectURL = '../'.$db->url;
                 $sessData['status']['msg'] = 'Operation échouée, essayez encore  ';
                 
                 //set redirect 
-                $redirectURL .= '?request=sortie';
+                $redirectURL .= 'index.php';
+            }
+    } 
+
+    else if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newCustomer']))
+    {
+        
+            $customerData = array
+            (
+                'name' => $_POST['name'],
+                'surname' =>  $_POST['surname'],
+                'phoneNumber' => $_POST['phone'],
+                'costPlan' => $_POST['cost_plan'],
+            );
+  $insert = $db->insert('customer', $customerData);
+            if($insert){
+                $sessData['status']['type'] = 'success';
+                $sessData['status']['msg'] = 'Operation done successfully ';
+            //set redirect url
+                $redirectURL .= 'index.php';
+
+            }
+
+            else{
+                $sessData['status']['type'] = 'error';
+                $sessData['status']['msg'] = 'Operation failed , try again  ';
+                
+                //set redirect 
+                $redirectURL .= 'index.php';
+            }
+    }
+    else if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newCostPlan']))
+    {
+        
+            $costData = array
+            (
+                'costAtResponse' => $_POST['costAtResponse'],
+                'costPerSecond' =>  $_POST['costPerSecond'],
+            );
+  $insert = $db->insert('costplan', $costData);
+            if($insert){
+                $sessData['status']['type'] = 'success';
+                $sessData['status']['msg'] = 'Operation done successfully ';
+            //set redirect url
+                $redirectURL .= 'index.php';
+
+            }
+
+            else{
+                $sessData['status']['type'] = 'error';
+                $sessData['status']['msg'] = 'Operation failed , try again  ';
+                
+                //set redirect 
+                $redirectURL .= 'index.php';
             }
     }
 
@@ -54,7 +99,7 @@ $redirectURL = '../'.$db->url;
         $sessData['status']['msg'] = 'fill all required fields';
         
         //set redirect url
-        $redirectURL .= '?request=sortie';
+        $redirectURL .= 'index.php';
        }
    
 

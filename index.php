@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.5">
-    <title>Dashboard Template · Bootstrap</title>
+    <title>Billing System</title>
 
     <link rel="canonical" href="index.html">
 
@@ -92,54 +92,122 @@
         <h4 >Report</h4>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Today</button>
-            <!-- <button type="button" class="btn btn-sm btn-outline-secondary">Export</button> -->
+            <a type="button" class="btn btn-sm btn-outline-secondary" href="?request=customers">
+              <span data-feather="user-plus"></span>
+            All Customer</a>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
+          <div class="btn-group mr-2">
+            <a type="button" class="btn btn-sm btn-outline-secondary" href="?request=calls">
+              <span data-feather="phone"></span>
+            All Calls</a>
+          </div>
+          <div class="btn-group mr-2">
+            <a type="button" class="btn btn-sm btn-outline-secondary" href="?request=bill">
+              <span data-feather="calendar"></span>
+            All Bills</a>
+          </div>          
         </div>
       </div>
 
 
       <div class="table-responsive">
+ <?php
+            if (isset($_REQUEST['request']))
+                  {
+                    if ($_REQUEST['request']=='bill')
+                    {
+?>
+
+
         <table class="table table-bordered table-striped table-sm">
           <thead>
-            <tr>
-              <th>#</th>
+            <tr>              
               <th>Customer</th>
-              <th>Calls</th>
+              <th>Month</th>
+              <th>Year</th>
               <th>Amount</th>
               <th>Total Bill</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>001</td>
+            <tr>              
               <td>Espoir Byamungu</td>
-              <td>25</td>
+              <td>April</td>
+              <td>2019</td>
               <td>25000</td>
               <td>20000</td>
             </tr>
-            <tr>
-              <td>002</td>
-              <td>amet djamila</td>
-              <td>30</td>
-              <td>35000</td>
-              <td>30000</td>
-            </tr>
-           
-           
           </tbody>
         </table>
+
+<?php      
+   } elseif ($_REQUEST['request']=='customers') {
+     
+?>
+     <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Surname</th>
+              <th>Phone Number</th>
+              <th>Cost Number</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>              
+              <td> 1</td>
+              <td>Espoir</td>
+              <td>Byamungu</td>
+              <td>0780440474</td>
+              <td>20</td>
+              <td>40</td>
+            </tr>
+          </tbody>
+        </table>
+<?php
+
+   }elseif ($_REQUEST['request']=='calls') {
+
+      ?>
+        <table class="table table-bordered table-striped table-sm">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Called Number</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>              
+              <td>Espoir Byamungu</td>
+              <td>23/06/2019</td>
+              <td>11:20 PM</td>
+              <td>0780440474</td>
+              <td>20</td>
+            </tr>
+          </tbody>
+        </table>
+      <?php
+
+   }
+ }
+
+?>
+
+      
       </div>
+
+
     </main>
   </div>
 </div>
 
 <!-- CREATE CUSTOMER Modal-->
-<div class="modal fade col-md-12" tabindex="-1" id="customer" role="dialog">
+<div class="modal fade col-md-12" tabindex="-1" id="customer"  role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -149,7 +217,7 @@
                 </button>
             </div>
             <div class="modal-body">
-              <form method="post" action="" enctype="multipart/form-data" id="new_customer">
+              <form action="controller/phoneCallController.php" method="POST">
                       <div class="form-group row">
                            <label class="col-sm-3 col-form-label">Name </label>
                            <div class="col-sm-9">
@@ -171,16 +239,16 @@
                         <div class="form-group row">
                            <label class="col-sm-3 col-form-label">Cost plan </label>
                            <div class="col-sm-9">
-                               <select type="text" name="type" class="form-control form-control-sm" required>
+                               <select type="text" name="cost_plan" class="form-control form-control-sm" required>
                                 <option selected disabled>[SELECT]</option>
-                                <option value="class A">class A</option>
-                                <option  value="class B">class B</option>
+                                <option value="1">class A</option>
+                                <option  value="2">class B</option>
                                </select>
                            </div>
                        </div>
                        
                         <div class="col-md-6 col-sm-12  col-sm-offset-4" style="margin-left: 50%;">                
-                          <button type="submit" class="btn btn-primary btn-sm pull-right" style="margin-left: 5px;" >Save</button>
+                          <button type="submit" class="btn btn-primary btn-sm pull-right" name="newCustomer" style="margin-left: 5px;" >Save</button>
                            <button class="btn btn-danger btn-sm pull-right "  data-dismiss="modal"  type="button">Cancel</button>            
                </div>
                      </form>
@@ -190,66 +258,35 @@
     </div>
 </div>
 
-<!-- BILL CREATION MODAL -->
+<!-- COST PLAN MODAL -->
 <div class="modal fade col-md-12" tabindex="-1" id="cost-plan" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Cost Call</h4>
+                <h4 class="modal-title">Cost Plan</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-              <form method="post" action="" enctype="multipart/form-data" id="new_bill">
-                <div class="form-group row">
-                           <label class="col-sm-3 col-form-label">Customer </label>
-                           <div class="col-sm-9">
-                               <select type="text" name="customer" class="form-control form-control-sm" required>
-                                  <option selected disabled> [ SELECT ] </option>
-                                  <option value="Espoir"> Espoir</option>
-                                  <option  value="Joseph"> Joseph</option>
-                                  <option  value="Bojos"> Bojos</option>
-                               </select>
-                           </div>
-                       </div>
+              <form method="post" action="controller/phoneCallController.php" >
+                     
                       <div class="form-group row">
-                           <label class="col-sm-3 col-form-label">Month </label>
+                         <label class="col-sm-3 col-form-label">Cost at response </label>
                            <div class="col-sm-9">
-                              <select type="text" name="type" class="form-control form-control-sm" required>
-                                <option selected disabled>[SELECT]</option>
-                                <option value="January">January</option>
-                                <option  value="February">February</option>
-                                <option  value="March">March</option>
-                                <option  value="April">April</option>
-                                <option  value="May">May</option>
-                                <option  value="June">June</option>
-                                <option  value="July">July</option>
-                                <option  value="August">August</option>
-                                <option  value="September">September</option>
-                                <option  value="October">October</option>
-                                <option  value="November">November</option>
-                                <option  value="December">December</option>
-                              </select>
-
-                           </div>
-                         </div>
-                      <div class="form-group row">
-                         <label class="col-sm-3 col-form-label">Year </label>
-                           <div class="col-sm-9">
-                               <input type="text" name="Year" class="form-control form-control-sm" required>
+                               <input type="text" name="costAtResponse" class="form-control form-control-sm" required>
                            </div>
                        </div>
                         <div class="form-group row">
-                           <label class="col-sm-3 col-form-label">Amount</label>
+                           <label class="col-sm-3 col-form-label">Cost per Second</label>
                            <div class="col-sm-9">
-                               <input type="text" name="phone" class="form-control form-control-sm" required>
+                               <input type="text" name="costPerSecond" class="form-control form-control-sm" required>
                            </div>
                        </div>
                         
                        
                         <div class="col-md-6 col-sm-12  col-sm-offset-4" style="margin-left: 50%;">                
-                          <button type="submit" class="btn btn-primary btn-sm pull-right" style="margin-left: 5px;" >Save</button>
+                          <button type="submit" class="btn btn-primary btn-sm pull-right" name="newCostPlan" style="margin-left: 5px;" >Save</button>
                            <button class="btn btn-danger btn-sm pull-right "  data-dismiss="modal"  type="button">Cancel</button>            
                </div>
                      </form>
@@ -260,7 +297,7 @@
 </div>
 
 <!-- PHONE CALL MODAL -->
-<div class="modal fade col-md-12" tabindex="-1" id="phone-call" role="dialog">
+<div class="modal fade col-md-12" tabindex="-1"  id="phone-call" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -270,15 +307,15 @@
                 </button>
             </div>
             <div class="modal-body">
-              <form method="post" action="" enctype="multipart/form-data" id="new_customer">
+              <form method="post" action="controller/phoneCallController.php" >
                        <div class="form-group row">
                            <label class="col-sm-3 col-form-label">Customer </label>
                            <div class="col-sm-9">
                                <select type="text" name="customer" class="form-control form-control-sm" required>
                                 <option selected disabled>[SELECT]</option>
-                                <option value="Espoir">Espoir</option>
-                                <option  value="Joseph">Joseph</option>
-                                <option  value="Bojos">Bojos</option>
+                                <option value="1">Espoir</option>
+                                <option  value="2">Joseph</option>
+                                <option  value="3">Bojos</option>
                                </select>
                            </div>
                        </div>
@@ -303,12 +340,12 @@
                         <div class="form-group row">
                            <label class="col-sm-3 col-form-label">Duration </label>
                            <div class="col-sm-9">
-                               <input type="time" name="duration" class="form-control form-control-sm" required>
+                               <input type="text" name="duration" class="form-control form-control-sm" required>
                            </div>
                        </div>
                        
                         <div class="col-md-6 col-sm-12  col-sm-offset-4" style="margin-left: 50%;">                
-                          <button type="submit" class="btn btn-primary btn-sm pull-right" style="margin-left: 5px;" >Save</button>
+                          <button type="submit" name="newPhoneCall" class="btn btn-primary btn-sm pull-right" style="margin-left: 5px;" >Save</button>
                            <button class="btn btn-danger btn-sm pull-right "  data-dismiss="modal"  type="button">Cancel</button>            
                </div>
                      </form>
