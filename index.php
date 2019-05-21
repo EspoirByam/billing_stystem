@@ -101,7 +101,7 @@ $db = new db();
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h4 >Report</h4>
+        <h5 ><a href="work-report.pdf"> Work Report <span data-feather="download"></span> </a></h5>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
             <a type="button" class="btn btn-sm btn-outline-secondary" href="?request=customers">
@@ -306,19 +306,30 @@ $db = new db();
 
     ?>
 
-        <h4 class="text-center text-info" style="margin: 10%;">Welcome into your Billing System...</h4>
-      <div class="col-sm-6 offset-3">
-        <div class="card">
-          <div class="card-header">
+        <h4 class="text-center text-info" style="margin: 8%;">Welcome into your Billing System...</h4>
+   <div class="col-sm-4 offset-4">
+           <p>
+             Please find the report of the entire work <a class="text-uppercase " href="work-report.pdf">
+
+             Here <span data-feather="download"></span></a>
+           </p>
+        </div>
+      <div class="col-sm-4 offset-4">
+        <div class="card ">
+          <div class="card-header text-success">
             Group assignment || Done by
           </div>
           <div class="card-body">
-            <span>201811 Boniface Kaghusa </span> <br>
-            <span>201811457 Espoir Byamungu </span>
+            <span><b>201811164</b> &nbsp; &nbsp;Boniface Kaghusa </span> <br>
+            <span><b>201811457</b>&nbsp; &nbsp; Espoir Byamungu </span><br>
+            <span><b>201811382 </b>&nbsp;&nbsp; Lafontaine Mukobelwa  </span> <br>
+            <span><b>201811000</b>&nbsp; &nbsp;  Joseph Kapiri </span> <br>
+            <span><b>201811000 </b> &nbsp;&nbsp; Nongo Lokili  </span> <br>
           </div>
           
         </div>
         </div>
+        
     <?php
    }
 
