@@ -323,8 +323,8 @@ $db = new db();
             <span><b>201811164</b> &nbsp; &nbsp;Boniface Kaghusa </span> <br>
             <span><b>201811457</b>&nbsp; &nbsp; Espoir Byamungu </span><br>
             <span><b>201811382 </b>&nbsp;&nbsp; Lafontaine Mukobelwa  </span> <br>
-            <span><b>201811000</b>&nbsp; &nbsp;  Joseph Kapiri </span> <br>
-            <span><b>201811000 </b> &nbsp;&nbsp; Nongo Lokili  </span> <br>
+            <span><b>201811</b>&nbsp; &nbsp;  Joseph Kapiri </span> <br>
+            <span><b>201811 </b> &nbsp;&nbsp; Nongo Lokili  </span> <br>
           </div>
           
         </div>
